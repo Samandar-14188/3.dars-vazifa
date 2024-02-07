@@ -1,24 +1,42 @@
-interface Ipost {
-  name:string
-}
+// "use client";
+// interface Ipost {
+//   title:string
+// }
 
-const getData: ()=> Promise<Ipost> = async ()=>{
-  const res = await fetch('https://jsonplaceholder.typicode.com/comments');
-  return res.json();
-}
+// const getData: ()=> Promise<Ipost[]> = async ()=>{
+//   const res = await fetch('https://jsonplaceholder.typicode.com/posts');
+//   return res.json();
+// }
 
 
 import { FiMoon } from "react-icons/fi";
 import { FaSearch } from "react-icons/fa";
-export default function page() {
-  const posts = getData()
-  
+import Countries from './components/countries'
+async function getData() {
+  try {
+    const res = await fetch(
+      "https://frontend-mentor-apis-6efy.onrender.com/countries"
+    );
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+    const data = await res.json();
+
+    return data.data;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    throw error;
+  }
+}
+
+export default async function page() {
+  const data = await getData();
   return (
     <div className="main-container" >
       <header>
         <h2>Where in the world?</h2>
         <span>
-        <FiMoon />
+        <FiMoon/>
         Dark Mode
         </span>
       </header>
@@ -41,9 +59,10 @@ export default function page() {
 </select>
 
        </div>
-       { posts && posts.map(post => {
-   <h1>{post.name}</h1>
-       })}
+       <div className="card-container">
+       <Countries countries={data} />
+
+       </div>
       </main>
     </div >
   )
